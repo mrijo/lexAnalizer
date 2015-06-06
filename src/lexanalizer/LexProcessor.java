@@ -38,7 +38,7 @@ public class LexProcessor {
     }
 
     public void process(String input) {
-
+        int parentesis = 0;
         LexHelper lexHelper = new LexHelper();
         this.lexExpresions = lexHelper.getInflatedLexExp(input);
         for (LexExpression lexExpresion : lexExpresions) {
@@ -49,10 +49,17 @@ public class LexProcessor {
                     AnalizadorJFlex analizer = new AnalizadorJFlex(new StringReader(String.valueOf(lexExpresion.getRawExpression().charAt(i))));
                     Tokens token = analizer.yylex();
                     if (token != null) {
+                        if (token == Tokens.PARENTESISDERECHO) {
+                            parentesis--;
+                        } else if (token == Tokens.PARENTESISIZQUIERDO) {
+                            parentesis++;
+                        }
+                        lexExpresion.setValid((parentesis > -1));
                         lexExpresion.getTokens().add(token);
                     }
+                     lexExpresion.setValid((parentesis !=0)? false: lexExpresion.isValid() );
                 }
-                lexExpresion.setValid((analizador.yylex() != Tokens.ERROR));
+                lexExpresion.setValid((analizador.yylex() == Tokens.ERROR) ? false : lexExpresion.isValid());
             } catch (IOException ex) {
                 Logger.getLogger(LexProcessor.class.getName()).log(Level.SEVERE, null, ex);
             }

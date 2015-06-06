@@ -32,8 +32,6 @@ public class LexAnalizer {
     public static void generadorLexer(String path) {
         File file = new File(path);
         jflex.Main.generate(file);
-
-		//JFlex.Main.generate(file);
     }
 
 }

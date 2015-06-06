@@ -68,6 +68,11 @@ public class LexAnalizerView extends javax.swing.JFrame {
         });
 
         jButton2.setText("Cancelar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -156,7 +161,6 @@ public class LexAnalizerView extends javax.swing.JFrame {
             JPanel panelContainer = new JPanel();
             panelContainer.setLayout(new BoxLayout(panelContainer, BoxLayout.Y_AXIS));
             BorderUIResource.TitledBorderUIResource titledBorderUIResource = new BorderUIResource.TitledBorderUIResource("Line " + lineCounter);
-           
 
             ArrayList<Tokens> tokens = lexExpresion.getTokens();
             for (Tokens token : tokens) {
@@ -165,11 +169,11 @@ public class LexAnalizerView extends javax.swing.JFrame {
 
             if (tokens.size() > 0) {
                 if (lexExpresion.isValid()) {
-                   titledBorderUIResource.setTitleColor(java.awt.Color.decode("#66FF66"));
+                    titledBorderUIResource.setTitleColor(java.awt.Color.decode("#66FF66"));
                 } else {
-                   titledBorderUIResource.setTitleColor(java.awt.Color.decode("#FF4D4D"));
+                    titledBorderUIResource.setTitleColor(java.awt.Color.decode("#FF4D4D"));
                 }
-                 lexExpContainer.setBorder(titledBorderUIResource);
+                lexExpContainer.setBorder(titledBorderUIResource);
                 lexExpContainer.getViewport().add(panelContainer);
                 this.rightPanel.add(lexExpContainer);
             }
@@ -181,6 +185,17 @@ public class LexAnalizerView extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        resetScreen();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void resetScreen() {
+        this.jTextArea1.setText("");
+        this.rightPanel.removeAll();
+        this.rightPanel.revalidate();
+        this.rightPanel.repaint();
+    }
 
     /**
      * @param args the command line arguments
