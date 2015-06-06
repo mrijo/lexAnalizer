@@ -8,21 +8,23 @@ import  model.Tokens;
 D=[0-9]
 Esp=[\ \t\r\n]
 WHITE=[ \t\r\n]
-EXPALPHA=[A-Za-z_]
-EXPDIG = [0-9]
-EXPALPHANUM = {EXPALPHA}|{EXPDIG}
-IDENTIFICADORVAR = {EXPALPHA}({EXPALPHANUM})*
 %{
 public String Tipo;
 %}
 %%
+
+
 
 "+" {return SUMA;}
 "-" {return RESTA;}
 "*" {return MULTIPLICACION;}
 "/" {return DIVISION;}
 "^" {return POTENCIA;}
-{EXPDIG} {return NUMERO;}
-{IDENTIFICADORVAR} {Tipo=yytext(); return VARIABLE;}
-.*|,+ {return ERROR;}
+{D}+{Esp}* {Tipo=yytext(); return NUMERO;}
 
+
+
+((({D}+("*"|"+"|"-"|"/"|"^"){D}+)+) | ((("*"|"+"|"-"|"/"|"^")(("(")({D}+("*"|"+"|"-"|"/"|"^"){D}+)+(")")))("*"|"+"|"-"|"/"|"^"){D}+)  | (("*"|"+"|"-"|"/"|"^")(("(")({D}+("*"|"+"|"-"|"/"|"^"){D}+)+(")"))) | (((("(")({D}+("*"|"+"|"-"|"/"|"^"){D}+)+(")")))(("*"|"+"|"-"|"/"|"^"){D}+)*))* {Tipo=yytext(); return VALIDO;}
+
+{Esp} {Tipo=yytext(); return SEPARADOR;}
+.*|,+ {return ERROR;}

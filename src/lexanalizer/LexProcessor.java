@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.LexExpression;
+import model.Tokens;
 
 /**
  *
@@ -46,16 +47,24 @@ public class LexProcessor {
                 AnalizadorJFlex analizador = new AnalizadorJFlex(new StringReader(lexExpresion.getRawExpression()));
                 for (int i = 0; i < lexExpresion.getRawExpression().length(); i++) {
                     AnalizadorJFlex analizer = new AnalizadorJFlex(new StringReader(String.valueOf(lexExpresion.getRawExpression().charAt(i))));
-                    System.out.println(analizer.yylex());
-                    lexExpresion.getTokens().add(analizer.yylex());
+                    Tokens token = analizer.yylex();
+                    if (token != null) {
+                        lexExpresion.getTokens().add(token);
+                    }
                 }
-                System.out.println("Expresion Regular=" + analizador.yylex());
+                lexExpresion.setValid((analizador.yylex() != Tokens.ERROR));
             } catch (IOException ex) {
                 Logger.getLogger(LexProcessor.class.getName()).log(Level.SEVERE, null, ex);
             }
-           
         }
+    }
 
+    public ArrayList<LexExpression> getLexExpresions() {
+        return lexExpresions;
+    }
+
+    public void setLexExpresions(ArrayList<LexExpression> lexExpresions) {
+        this.lexExpresions = lexExpresions;
     }
 
 }

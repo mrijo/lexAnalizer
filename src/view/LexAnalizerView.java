@@ -5,8 +5,22 @@
  */
 package view;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import javafx.scene.paint.Color;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.TitledBorder;
+import javax.swing.plaf.BorderUIResource;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import lexanalizer.LexProcessor;
+import model.LexExpression;
+import model.Tokens;
 
 /**
  *
@@ -30,7 +44,6 @@ public class LexAnalizerView extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         mainPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
@@ -38,10 +51,12 @@ public class LexAnalizerView extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
         rightPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Analizador Lexico");
+        setAlwaysOnTop(true);
 
         mainPanel.setMaximumSize(new java.awt.Dimension(32, 32767));
 
@@ -64,13 +79,13 @@ public class LexAnalizerView extends javax.swing.JFrame {
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(leftPanelLayout.createSequentialGroup()
-                .addContainerGap(138, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftPanelLayout.createSequentialGroup()
+                .addContainerGap(160, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addGap(258, 258, 258))
-            .addComponent(jScrollPane1)
+                .addGap(158, 158, 158))
         );
         leftPanelLayout.setVerticalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -86,22 +101,18 @@ public class LexAnalizerView extends javax.swing.JFrame {
 
         rightPanel.setAutoscrolls(true);
         rightPanel.setMaximumSize(new java.awt.Dimension(32, 2147483647));
-        rightPanel.setLayout(new java.awt.GridBagLayout());
-
-        jLabel1.setText("jLabel1");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        rightPanel.add(jLabel1, gridBagConstraints);
+        rightPanel.setLayout(new javax.swing.BoxLayout(rightPanel, javax.swing.BoxLayout.Y_AXIS));
+        jScrollPane3.setViewportView(rightPanel);
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(leftPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rightPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -110,8 +121,8 @@ public class LexAnalizerView extends javax.swing.JFrame {
                 .addGap(0, 5, Short.MAX_VALUE))
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(rightPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -119,9 +130,9 @@ public class LexAnalizerView extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,12 +146,40 @@ public class LexAnalizerView extends javax.swing.JFrame {
 
         LexProcessor lexProcesor = LexProcessor.getNewInstance();
         lexProcesor.process(jTextArea1.getText());
-        this.rightPanel.add(new JLabel("no no no"));
-        
-     this.rightPanel.revalidate();
-     this.rightPanel.repaint();
-        
-        
+        ArrayList<LexExpression> lexExpresions = lexProcesor.getLexExpresions();
+        int lineCounter = 1;
+        this.rightPanel.removeAll();
+
+        for (LexExpression lexExpresion : lexExpresions) {
+            JScrollPane lexExpContainer = new JScrollPane();
+            lexExpContainer.setMaximumSize(new Dimension(458, 150));
+            JPanel panelContainer = new JPanel();
+            panelContainer.setLayout(new BoxLayout(panelContainer, BoxLayout.Y_AXIS));
+            BorderUIResource.TitledBorderUIResource titledBorderUIResource = new BorderUIResource.TitledBorderUIResource("Line " + lineCounter);
+           
+
+            ArrayList<Tokens> tokens = lexExpresion.getTokens();
+            for (Tokens token : tokens) {
+                panelContainer.add(new JLabel(token.toString()));
+            }
+
+            if (tokens.size() > 0) {
+                if (lexExpresion.isValid()) {
+                   titledBorderUIResource.setTitleColor(java.awt.Color.decode("#66FF66"));
+                } else {
+                   titledBorderUIResource.setTitleColor(java.awt.Color.decode("#FF4D4D"));
+                }
+                 lexExpContainer.setBorder(titledBorderUIResource);
+                lexExpContainer.getViewport().add(panelContainer);
+                this.rightPanel.add(lexExpContainer);
+            }
+            lineCounter++;
+        }
+
+        this.rightPanel.revalidate();
+        this.rightPanel.repaint();
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -177,8 +216,8 @@ public class LexAnalizerView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JPanel mainPanel;
