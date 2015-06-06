@@ -6,7 +6,11 @@ import  model.Tokens;
 %class AnalizadorJFlex
 %type Tokens
 D=[0-9]
+OPERACION_BASICA= ({D}+{Esp}*(("*"|"+"|"-"|"/"|"^"){Esp}*{D}+{Esp}*)*)
 Esp=[\ \t\r]
+PA=("(")
+PC=(")")
+OPERADORES= ("*"|"+"|"-"|"/"|"^")
 WHITE=[ \t\r\n]
 %{
 public String Tipo;
@@ -24,10 +28,8 @@ public String Tipo;
 ")" {return PARENTESIS2;}
 {D}+{Esp}* {Tipo=yytext(); return NUMERO;}
 
-
-
-("+" | "-")?(({D}+{Esp}*(("*"|"+"|"-"|"/"|"^"){Esp}*{D}+{Esp}*)*) | (("("){D}+(("*"|"+"|"-"|"/"|"^"){D}+)*(")") | (("*"|"+"|"-"|"/"|"^")("("){D}+(("*"|"+"|"-"|"/"|"^"){D}+)*(")")(("*"|"+"|"-"|"/"|"^"){D}+)+)))*  {Tipo=yytext(); return VALIDO;}
-(("("){D}+(("*"|"+"|"-"|"/"|"^"){D}+)*(")")(("*"|"+"|"-"|"/"|"^"){D}+)+)(({D}+(("*"|"+"|"-"|"/"|"^"){D}+)*) | (("("){D}+(("*"|"+"|"-"|"/"|"^"){D}+)*(")") | (("*"|"+"|"-"|"/"|"^")("("){D}+(("*"|"+"|"-"|"/"|"^"){D}+)*(")")(("*"|"+"|"-"|"/"|"^"){D}+)+)))*  {Tipo=yytext(); return VALIDO;}
+("+" | "-")?({OPERACION_BASICA} | ({PA}{OPERACION_BASICA}{PC} | (({OPERADORES}{PA}{OPERACION_BASICA}{PC})+  | ({OPERADORES}{PA}{OPERACION_BASICA}{PC}({OPERADORES}{D}+)+)))*  {Tipo=yytext(); return VALIDO;}
+({PA}{OPERACION_BASICA}{PC}({OPERADORES}{D}+)+) ({OPERACION_BASICA} | ({PA}{OPERACION_BASICA}{PC} | (({OPERADORES}{PA}{OPERACION_BASICA}{PC})+  | ({OPERADORES}{PA}{OPERACION_BASICA}{PC}({OPERADORES}{D}+)+)))*  {Tipo=yytext(); return VALIDO;}
 
 {Esp} {Tipo=yytext(); return SEPARADOR;}
 .*|,+ {return ERROR;}
