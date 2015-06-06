@@ -15,7 +15,7 @@ import view.LexAnalizerView;
 public class LexAnalizer {
 
     /**
-     * @param args the command line arguments
+     * @param args the command line argumentsasdasd
      */
     public static void main(String[] args) {
         LexAnalizerView lexAnalizaer = new LexAnalizerView();
